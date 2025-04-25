@@ -3,6 +3,11 @@
 **Project:** FL_IMAGE_PACKER  
 **Author:** [https://github.com/Facta-Leopard](https://github.com/Facta-Leopard)  
 **License:** Creative Commons Attribution 4.0 International (CC BY 4.0)
+** This library also makes use of the following third-party component:
+- DirectXTex (https://github.com/microsoft/DirectXTex)
+- Copyright (c) Microsoft Corporation
+- Licensed under the MIT License
+- Full License: https://opensource.org/licenses/MIT
 
 ---
 
@@ -58,15 +63,20 @@
 
 ## 소개
 
--FL_IMAGE_PACKER는 기존 이미지파일을 DirectXTex의 ScratchImage 형식의 더이터로 관리하는 정적 라이브러리입니다.  
--COM(Component Object Model) 인터페이스와 DirectX 형태 데스크립터 조건을 적용하여 구성했습니다.
+-FL_IMAGE_PACKER는 기존 이미지파일을 DirectXTex의 ScratchImage 형식의 데이터로 관리하는 정적 라이브러리입니다.  
+-COM(Component Object Model) 인터페이스와 DirectX의 플래그 조건을 응용하여 구성했습니다.
 
 ## 특징
-- ScratchImage 구조를 CPU 메모리 구조체(메타데이터 + 핏셀 블롭)로 변환 및 저장 가능합니다,
+- ScratchImage 구조를 CPU 메모리 구조체(메타데이터 + 픽셀 블롭)로 변환 및 저장 가능합니다,
 - ScratchImage 구조로 간편하게 바꾸기가 가능합니다,(DirectX ID3D11Texture2D로 쉽게 변환 및 사용 가능)
 - 전체 입/출력 시스템을 하나의 파일로 관리합니다.(확장자 `.rsc` 파일)
-- COM 형식 API 함수 형태 사용하였습니다.
-- WinAPI + DirectXTex를 기반으로 해서 구현하였습니다.
+- COM 형식 API 함수로 구성하였습니다.
+- WinAPI + DirectXTex를 기반으로 해서 구현하였습니다.(MIT 라이센스 추가 명시함)
+- 이 라이브러리는 다음의 제3자 구성 요소를 사용합니다:
+  - DirectXTex (https://github.com/microsoft/DirectXTex)
+  - Copyright (c) Microsoft Corporation
+  - MIT 라이선스에 따라 사용 허가됨
+  - 전체 라이선스: https://opensource.org/licenses/MIT
 
 ## API 사용법
 
