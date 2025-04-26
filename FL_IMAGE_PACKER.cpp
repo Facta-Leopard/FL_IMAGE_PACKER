@@ -35,7 +35,7 @@
 #include <map>
 
 // 스크래치 이미지로 환원시 사용할 정보
-struct FL_ImageEntry
+struct FL_DS_ImageEntry
 {
 	size_t				SDK_M_Width;				// 높이정보
 	size_t				SDK_M_Height;				// 길이정보
@@ -49,11 +49,11 @@ struct FL_ImageEntry
 struct FL_DS_CPU_Image
 {
 	TexMetadata					M_MetaData;			// 이미지 파일이 갖고 있는 메타데이터; 밈맵 증 정보가 들어있음; DirectX 전용
-	vector<FL_ImageEntry>       STL_M_Entry;		// 스크래치 이미지로 환원시 사용할 정보들
+	vector<FL_DS_ImageEntry>       STL_M_Entry;		// 스크래치 이미지로 환원시 사용할 정보들
 	vector<uint8_t>             M_PixelBlob;		// 이미지에 관한 전체정보(1차원 정보)로, 모든 정보가 한 줄로 담김
 };
 
-struct C_ImageSet
+struct FL_DS_ImageSet
 {
 	FL_DS_CPU_Image					M_CPUImage;
 	FL_DS_ResourceImageDesc			M_Desc;
@@ -79,7 +79,7 @@ public:
 public:
 	~C_ImagePackingManager()
 	{
-		for (std::pair<const wstring, C_ImageSet*>& T_Pair : STL_M_ImageSet)
+		for (std::pair<const wstring, FL_DS_ImageSet*>& T_Pair : STL_M_ImageSet)
 		{
 			if (nullptr != T_Pair.second)		// 방어코드
 			{
@@ -92,7 +92,7 @@ public:
 	}
 
 protected:
-	map<wstring, C_ImageSet*>		STL_M_ImageSet;			// map<wstring, C_ImageSet*>; 데이터를 저장할 STL컨테이너
+	map<wstring, FL_DS_ImageSet*>		STL_M_ImageSet;			// map<wstring, FL_DS_ImageSet*>; 데이터를 저장할 STL컨테이너
 	wstring							wstring_BasicPath;		// wstring; 기본적인 디렉토리 주소; 실행 디렉토리 + (\Resource) 디렉토리 주소 설정
 
 public:
@@ -121,14 +121,14 @@ public:
 			fwrite(key.c_str(), sizeof(wchar_t), keyLength, SDK_T_File);
 
 
-			const C_ImageSet* T_ImageSet = pair.second;
+			const FL_DS_ImageSet* T_ImageSet = pair.second;
 			const FL_DS_CPU_Image& DS_T_CpuImage = T_ImageSet->M_CPUImage;
 
 			fwrite(&DS_T_CpuImage.M_MetaData, sizeof(TexMetadata), 1, SDK_T_File);
 
 			const size_t entryCount = DS_T_CpuImage.STL_M_Entry.size();
 			fwrite(&entryCount, sizeof(size_t), 1, SDK_T_File);
-			fwrite(DS_T_CpuImage.STL_M_Entry.data(), sizeof(FL_ImageEntry), entryCount, SDK_T_File);
+			fwrite(DS_T_CpuImage.STL_M_Entry.data(), sizeof(FL_DS_ImageEntry), entryCount, SDK_T_File);
 
 			const size_t pixelSize = DS_T_CpuImage.M_PixelBlob.size();
 			fwrite(&pixelSize, sizeof(size_t), 1, SDK_T_File);
@@ -162,13 +162,13 @@ public:
 			wstring key(keyLength, L'\0');
 			fread(&key[0], sizeof(wchar_t), keyLength, SDK_T_File);
 
-			auto* T_ImageSet = new C_ImageSet();
+			auto* T_ImageSet = new FL_DS_ImageSet();
 			fread(&T_ImageSet->M_CPUImage.M_MetaData, sizeof(TexMetadata), 1, SDK_T_File);
 
 			size_t entryCount = 0;
 			fread(&entryCount, sizeof(size_t), 1, SDK_T_File);
 			T_ImageSet->M_CPUImage.STL_M_Entry.resize(entryCount);
-			fread(T_ImageSet->M_CPUImage.STL_M_Entry.data(), sizeof(FL_ImageEntry), entryCount, SDK_T_File);
+			fread(T_ImageSet->M_CPUImage.STL_M_Entry.data(), sizeof(FL_DS_ImageEntry), entryCount, SDK_T_File);
 
 			size_t pixelSize = 0;
 			fread(&pixelSize, sizeof(size_t), 1, SDK_T_File);
@@ -181,9 +181,9 @@ public:
 		fclose(SDK_T_File);
 	}
 
-	C_ImageSet* MF_FindFromVectorData(const wstring& _wstringName)
+	FL_DS_ImageSet* MF_FindFromVectorData(const wstring& _wstringName)
 	{
-		map<wstring, C_ImageSet*>::iterator T_Iterator = STL_M_ImageSet.find(_wstringName);
+		map<wstring, FL_DS_ImageSet*>::iterator T_Iterator = STL_M_ImageSet.find(_wstringName);
 
 		if (STL_M_ImageSet.end() != T_Iterator)
 		{
@@ -195,7 +195,7 @@ public:
 		}
 	}
 
-	C_ImageSet* MF_FindFromVectorData(const string& _stringName)
+	FL_DS_ImageSet* MF_FindFromVectorData(const string& _stringName)
 	{
 		const wstring wstring_T_Name = MF_ConvertStringToWString_WinAPI(_stringName);
 
@@ -203,9 +203,9 @@ public:
 		return MF_FindFromVectorData(wstring_T_Name);
 	}
 
-	void MF_Attach_ImageSet(const wstring& _wstringName, C_ImageSet* _ImageSet)
+	void MF_Attach_ImageSet(const wstring& _wstringName, FL_DS_ImageSet* _ImageSet)
 	{
-		map<wstring, C_ImageSet*>::iterator T_Iterator = STL_M_ImageSet.find(_wstringName);
+		map<wstring, FL_DS_ImageSet*>::iterator T_Iterator = STL_M_ImageSet.find(_wstringName);
 		if (T_Iterator != STL_M_ImageSet.end())
 		{
 			delete T_Iterator->second;
@@ -221,7 +221,7 @@ public:
 	// 모듈용 함수
 public:
 	// 스크래치 이미지를 리소스 관리용 구조체로 변환하는 함수; COM(Component Object Model) 방식
-	HRESULT MF_Store_ScratchImage_To_CPUImage(const ScratchImage& _ScratchImage, C_ImageSet& _ImageSet)
+	HRESULT MF_Store_ScratchImage_To_CPUImage(const ScratchImage& _ScratchImage, FL_DS_ImageSet& _ImageSet)
 	{
 		FL_DS_CPU_Image T_CPU_Image = _ImageSet.M_CPUImage;
 		const Image* P_ImageArray = _ScratchImage.GetImages();
@@ -244,7 +244,7 @@ public:
 		for (size_t i = 0; i < Count; ++i)
 		{
 			const Image& T_Image = P_ImageArray[i];
-			FL_ImageEntry Entry = {};
+			FL_DS_ImageEntry Entry = {};
 			Entry.SDK_M_Width = T_Image.width;
 			Entry.SDK_M_Height = T_Image.height;
 			Entry.DX_M_ImageFormat = T_Image.format;
@@ -319,7 +319,7 @@ void FL_Save_AsFile()
 void FL_Save_ScratchImage(const wstring& _wstringName, const FL_DS_ResourceImageDesc& _ResourceImageDesc)
 {
 	// 저장할 임시용 구조체 초기화
-	C_ImageSet T_ImageSet = {};
+	FL_DS_ImageSet T_ImageSet = {};
 
 	// 임시용 구조체에 이미지리소스 관련 메타데이터; 유의! Scratch용 메타데이터와 헷갈리지 말 것!
 	T_ImageSet.M_Desc = _ResourceImageDesc;
@@ -370,7 +370,7 @@ void FL_Save_ScratchImage(const wstring& _wstringName, const FL_DS_ResourceImage
 		MessageBox(nullptr, L"ScratchImage Converting Failed", L"C_ImageManager.MF_Store_ScratchImage_To_CPUImage() Must Check", MB_OK | MB_ICONINFORMATION);
 	}
 
-	C_ImageSet* P_T_ImageSet = &T_ImageSet;
+	FL_DS_ImageSet* P_T_ImageSet = &T_ImageSet;
 
 	C_ImageManager.MF_Attach_ImageSet(_wstringName, P_T_ImageSet);
 }
@@ -386,7 +386,7 @@ void FL_Save_ScratchImage(const string& _stringName, const FL_DS_ResourceImageDe
 
 HRESULT FL_Load_ScratchImage(const wstring& _wstringName, ScratchImage& _ScratchImage)
 {
-	C_ImageSet* T_ImageSet = C_ImageManager.MF_FindFromVectorData(_wstringName);
+	FL_DS_ImageSet* T_ImageSet = C_ImageManager.MF_FindFromVectorData(_wstringName);
 
 	if (nullptr != T_ImageSet)
 	{
