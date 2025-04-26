@@ -11,6 +11,25 @@
 
 ---
 
+## Update
+
+- **Optimization**:  
+  - Eliminated unnecessary wstring initialization during load operations.  
+  - Replaced default null character initialization with manual memory resizing to reduce CPU overhead.
+
+- **Bug Fix**:  
+  - Fixed missing serialization/deserialization of `FL_DS_ResourceImageDesc` in `FL_DS_ImageSet`.  
+  - Ensured complete save/load consistency for resource metadata.
+
+- **Naming Consistency**:  
+  - Rechecked and unified temporary identifier naming conventions.  
+  - Standardized intermediate variables to match `Naming Convention` style.
+
+- **Context Note**:  
+  - These issues were identified and corrected during the porting and internal review of this project.
+
+---
+
 ## About
 
 - FL_IMAGE_PACKER is a static library for handling image resources captured from Scratch.
@@ -58,6 +77,24 @@
 **프로젝트:** FL_IMAGE_PACKER  
 **작성자:** [https://github.com/Facta-Leopard](https://github.com/Facta-Leopard)  
 **라이센스:** Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+---
+
+## 업데이트
+
+- **최적화**:  
+  - 로드 작업 중 불필요한 wstring 초기화를 제거했습니다.  
+  - 기본 null 문자 초기화를 제거하고, 메모리 크기만 확보하는 방식으로 변경하여 CPU 오버헤드를 감소시켰습니다.
+
+- **버그 수정**:  
+  - `FL_DS_ImageSet` 내 `FL_DS_ResourceImageDesc` 멤버의 저장/로드 누락 문제를 수정했습니다.  
+  - 리소스 메타데이터의 저장 및 복원 일관성을 확보했습니다.
+
+- **명명 규칙 통일**:  
+  - 임시 식별자 명칭을 `명명규칙(Naming Convention)`에 맞게 통일했습니다.
+
+- **추가 메모**:  
+  - 본 수정 사항들은 프로젝트 이식 및 내부 점검 과정 중 발견되어 수정되었습니다.
 
 ---
 

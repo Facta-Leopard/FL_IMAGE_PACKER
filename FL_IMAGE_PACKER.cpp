@@ -114,25 +114,31 @@ public:
 
 		for (const auto& pair : STL_M_ImageSet)
 		{
-			const wstring& key = pair.first;
-			const size_t keyLength = key.length();
+			const wstring& T_Key = pair.first;
+			const size_t T_KeyLength = T_Key.length();
 
-			fwrite(&keyLength, sizeof(size_t), 1, SDK_T_File);
-			fwrite(key.c_str(), sizeof(wchar_t), keyLength, SDK_T_File);
-
+			fwrite(&T_KeyLength, sizeof(size_t), 1, SDK_T_File);
+			fwrite(T_Key.c_str(), sizeof(wchar_t), T_KeyLength, SDK_T_File);
 
 			const FL_DS_ImageSet* T_ImageSet = pair.second;
+
 			const FL_DS_CPU_Image& DS_T_CpuImage = T_ImageSet->M_CPUImage;
+
+			// FL_DS_ResourceImageDesc이 저장안되는 논리버그 수정
+			const FL_DS_ResourceImageDesc& DS_T_Desc = T_ImageSet->M_Desc;
 
 			fwrite(&DS_T_CpuImage.M_MetaData, sizeof(TexMetadata), 1, SDK_T_File);
 
-			const size_t entryCount = DS_T_CpuImage.STL_M_Entry.size();
-			fwrite(&entryCount, sizeof(size_t), 1, SDK_T_File);
-			fwrite(DS_T_CpuImage.STL_M_Entry.data(), sizeof(FL_DS_ImageEntry), entryCount, SDK_T_File);
+			const size_t T_EntryCount = DS_T_CpuImage.STL_M_Entry.size();
+			fwrite(&T_EntryCount, sizeof(size_t), 1, SDK_T_File);
+			fwrite(DS_T_CpuImage.STL_M_Entry.data(), sizeof(FL_DS_ImageEntry), T_EntryCount, SDK_T_File);
 
-			const size_t pixelSize = DS_T_CpuImage.M_PixelBlob.size();
-			fwrite(&pixelSize, sizeof(size_t), 1, SDK_T_File);
-			fwrite(DS_T_CpuImage.M_PixelBlob.data(), 1, pixelSize, SDK_T_File);
+			const size_t T_PixelSize = DS_T_CpuImage.M_PixelBlob.size();
+			fwrite(&T_PixelSize, sizeof(size_t), 1, SDK_T_File);
+			fwrite(DS_T_CpuImage.M_PixelBlob.data(), 1, T_PixelSize, SDK_T_File);
+
+			// FL_DS_ResourceImageDesc이 저장안되는 논리버그 수정
+			fwrite(&DS_T_Desc, sizeof(FL_DS_ResourceImageDesc), 1, SDK_T_File);
 		}
 
 		fclose(SDK_T_File);
@@ -156,26 +162,39 @@ public:
 
 		for (size_t i = 0; i < T_MapSize; ++i)
 		{
-			size_t keyLength = 0;
-			fread(&keyLength, sizeof(size_t), 1, SDK_T_File);
+			size_t T_KeyLength = 0;
+			fread(&T_KeyLength, sizeof(size_t), 1, SDK_T_File);
 
-			wstring key(keyLength, L'\0');
-			fread(&key[0], sizeof(wchar_t), keyLength, SDK_T_File);
+			// 코드개선: 메모리만 확보 (초기화 없음); 필요없는 초기화 작업을 없애 오버헤드 감소
+			wstring T_Key;
+			T_Key.resize(T_KeyLength);
+
+			fread(&T_Key[0], sizeof(wchar_t), T_KeyLength, SDK_T_File);
 
 			auto* T_ImageSet = new FL_DS_ImageSet();
-			fread(&T_ImageSet->M_CPUImage.M_MetaData, sizeof(TexMetadata), 1, SDK_T_File);
 
-			size_t entryCount = 0;
-			fread(&entryCount, sizeof(size_t), 1, SDK_T_File);
-			T_ImageSet->M_CPUImage.STL_M_Entry.resize(entryCount);
-			fread(T_ImageSet->M_CPUImage.STL_M_Entry.data(), sizeof(FL_DS_ImageEntry), entryCount, SDK_T_File);
+			// 가독성을 위해, Save 형태와 같이 역참조 줄이는 형식 적용
+			FL_DS_CPU_Image& DS_T_CpuImage = T_ImageSet->M_CPUImage;
 
-			size_t pixelSize = 0;
-			fread(&pixelSize, sizeof(size_t), 1, SDK_T_File);
-			T_ImageSet->M_CPUImage.M_PixelBlob.resize(pixelSize);
-			fread(T_ImageSet->M_CPUImage.M_PixelBlob.data(), 1, pixelSize, SDK_T_File);
+			// FL_DS_ResourceImageDesc이 저장안되는 논리버그 수정
+			FL_DS_ResourceImageDesc& DS_T_Desc = T_ImageSet->M_Desc;
 
-			STL_M_ImageSet.insert({ key, T_ImageSet });
+			fread(&DS_T_CpuImage.M_MetaData, sizeof(TexMetadata), 1, SDK_T_File);
+
+			size_t T_EntryCount = 0;
+			fread(&T_EntryCount, sizeof(size_t), 1, SDK_T_File);
+			DS_T_CpuImage.STL_M_Entry.resize(T_EntryCount);
+			fread(DS_T_CpuImage.STL_M_Entry.data(), sizeof(FL_DS_ImageEntry), T_EntryCount, SDK_T_File);
+
+			size_t T_PixelSize = 0;
+			fread(&T_PixelSize, sizeof(size_t), 1, SDK_T_File);
+			DS_T_CpuImage.M_PixelBlob.resize(T_PixelSize);
+			fread(DS_T_CpuImage.M_PixelBlob.data(), 1, T_PixelSize, SDK_T_File);
+
+			// FL_DS_ResourceImageDesc이 저장안되는 논리버그 수정
+			fread(&DS_T_Desc, sizeof(FL_DS_ResourceImageDesc), 1, SDK_T_File);
+
+			STL_M_ImageSet.insert({ T_Key, T_ImageSet });
 		}
 
 		fclose(SDK_T_File);
