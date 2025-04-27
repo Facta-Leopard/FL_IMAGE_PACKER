@@ -11,21 +11,30 @@
 
 ---
 
-## Update
+## Urgent Update(2025-04-27)
 
-- **Optimization**:  
+- **Bug Fix**:
+  - Ensured automatic resource loading during the initialization of `C_ImagePackingManager`.  
+  - `MF_Load_All()` is now called in the constructor to immediately populate resources upon manager creation.
+
+- **Optimization**:
+  - Removed unnecessary parameter from `MF_Load_All()`.
+
+## Update(2025-04-27)
+
+- **Optimization**:
   - Eliminated unnecessary wstring initialization during load operations.  
   - Replaced default null character initialization with manual memory resizing to reduce CPU overhead.
 
-- **Bug Fix**:  
+- **Bug Fix**:
   - Fixed missing serialization/deserialization of `FL_DS_ResourceImageDesc` in `FL_DS_ImageSet`.  
   - Ensured complete save/load consistency for resource metadata.
 
-- **Naming Consistency**:  
+- **Naming Consistency**:
   - Rechecked and unified temporary identifier naming conventions.  
   - Standardized intermediate variables to match `Naming Convention` style.
 
-- **Context Note**:  
+- **Context Note**:
   - These issues were identified and corrected during the porting and internal review of this project.
 
 ---
@@ -80,20 +89,29 @@
 
 ---
 
-## 업데이트
+## 긴급 업데이트(2025-04-27)
 
-- **최적화**:  
-  - 로드 작업 중 불필요한 wstring 초기화를 제거했습니다.  
+- **버그 수정**:
+  - `C_ImagePackingManager` 객체 생성 시 자동으로 리소스를 로드하도록 변경했습니다.  
+  - 생성자 내에서 `MF_Load_All()`을 호출하여 초기화 시 리소스가 즉시 준비됩니다.
+
+- **최적화**:
+  - `MF_Load_All()` 함수의 불필요한 인자를 제거했습니다.
+
+## 업데이트(2025-04-27)
+
+- **최적화**:
+  - 로드 작업 중 불필요한 wstring 초기화를 제거했습니다.
   - 기본 null 문자 초기화를 제거하고, 메모리 크기만 확보하는 방식으로 변경하여 CPU 오버헤드를 감소시켰습니다.
 
-- **버그 수정**:  
-  - `FL_DS_ImageSet` 내 `FL_DS_ResourceImageDesc` 멤버의 저장/로드 누락 문제를 수정했습니다.  
+- **버그 수정**:
+  - `FL_DS_ImageSet` 내 `FL_DS_ResourceImageDesc` 멤버의 저장/로드 누락 문제를 수정했습니다.
   - 리소스 메타데이터의 저장 및 복원 일관성을 확보했습니다.
 
-- **명명 규칙 통일**:  
+- **명명 규칙 통일**:
   - 임시 식별자 명칭을 `명명규칙(Naming Convention)`에 맞게 통일했습니다.
 
-- **추가 메모**:  
+- **추가 메모**:
   - 본 수정 사항들은 프로젝트 이식 및 내부 점검 과정 중 발견되어 수정되었습니다.
 
 ---

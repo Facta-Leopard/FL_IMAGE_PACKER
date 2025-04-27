@@ -71,6 +71,8 @@ public:
 		GetCurrentDirectory(255, wchar_T_Path_s);
 		wcscat_s(wchar_T_Path_s, 255, L"\\Resource\\");
 		wstring_BasicPath = wchar_T_Path_s;
+
+		MF_Load_All();
 	}
 
 public:
@@ -144,7 +146,7 @@ public:
 		fclose(SDK_T_File);
 	}
 
-	void MF_Load_All(const wstring& _wstringName)
+	void MF_Load_All()
 	{
 		// 향후, 난독화 및 분기 등으로, 메모리 덤프 등으로 리버스 엔지니어링하는 것을 막는 것도 고려해보자
 
