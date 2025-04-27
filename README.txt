@@ -11,6 +11,11 @@
 
 ---
 
+## Micro Update(2025-04-28)
+
+- **Feature Enhancement**:
+  - Increased `extension buffer size to allow up to 15 characters`, `reducing buffer overrun risk`.
+
 ## Additional Update(2025-04-27)
 
 - **Feature Enhancement**:
@@ -106,6 +111,11 @@
 **라이센스:** Creative Commons Attribution 4.0 International (CC BY 4.0)
 
 ---
+
+## 소규모 업데이트(2025-04-28)
+
+- **개선 사항**:
+  - `확장자 최대 길이를 15글자까지 허용하도록 버퍼 크기를 확장`하여, 오버런 가능성을 줄였습니다.
 
 ## 추가 업데이트(2025-04-27)
 

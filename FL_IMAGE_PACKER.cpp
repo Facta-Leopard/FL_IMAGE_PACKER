@@ -48,9 +48,13 @@ struct FL_DS_ImageEntry
 // 리소스 패킹전용 구조체
 struct FL_DS_CPU_Image
 {
-	TexMetadata					M_MetaData;			// 이미지 파일이 갖고 있는 메타데이터; 밈맵 증 정보가 들어있음; DirectX 전용
-	vector<FL_DS_ImageEntry>       STL_M_Entry;		// 스크래치 이미지로 환원시 사용할 정보들
-	vector<uint8_t>             M_PixelBlob;		// 이미지에 관한 전체정보(1차원 정보)로, 모든 정보가 한 줄로 담김
+	FL_DS_CPU_Image()
+		: M_MetaData{}
+	{}
+
+	TexMetadata						M_MetaData;			// 이미지 파일이 갖고 있는 메타데이터; 밈맵 증 정보가 들어있음; DirectX 전용
+	vector<FL_DS_ImageEntry>        STL_M_Entry;		// 스크래치 이미지로 환원시 사용할 정보들
+	vector<uint8_t>					M_PixelBlob;		// 이미지에 관한 전체정보(1차원 정보)로, 모든 정보가 한 줄로 담김
 };
 
 struct FL_DS_ImageSet
@@ -73,7 +77,7 @@ public:
 		wstring_BasicPath = wchar_T_Path_s;
 
 		// 코드개선: 기본적으로 지정되는 파일명(확장자 포함)
-		wstring_BasicFileName = L"CompressedImage.rsc";
+		wstring_M_BasicFileName = L"CompressedImage.rsc";
 
 		MF_Load_All();
 	}
@@ -97,9 +101,9 @@ public:
 	}
 
 protected:
-	map<wstring, FL_DS_ImageSet*>		STL_M_ImageSet;				// map<wstring, FL_DS_ImageSet*>; 데이터를 저장할 STL컨테이너
-	wstring							wstring_BasicPath;				// wstring; 기본적인 디렉토리 주소; 실행 디렉토리 + (\Resource) 디렉토리 주소 설정
-	wstring							wstring_BasicFileName;			// wstring; 기본적인 디렉토리 주소; 실행 디렉토리 + (\Resource) 디렉토리 주소 설정
+	map<wstring, FL_DS_ImageSet*>		STL_M_ImageSet;						// map<wstring, FL_DS_ImageSet*>; 데이터를 저장할 STL컨테이너
+	wstring								wstring_M_BasicPath;				// wstring; 기본적인 디렉토리 주소; 실행 디렉토리 + (\Resource) 디렉토리 주소 설정
+	wstring								wstring_M_BasicFileName;			// wstring; 기본적인 파일명; 필요시 수정하여 사용가능
 
 public:
 	void MF_Save_All()
@@ -111,7 +115,7 @@ public:
 		// 코드 개선; 파일명 지정가능
 		// 임시 경로변수 생성
 		// 오버헤드를 극한으로 감소하기 위해, 환원방식이 아닌 스택 임시변수 선언 및 버리기로 함
-		wstring wstring_T_Path = wstring_BasicPath + wstring_BasicFileName;
+		wstring wstring_T_Path = wstring_M_BasicPath + wstring_M_BasicFileName;
 
 		// 파일 열기
 		_wfopen_s(&SDK_T_File, wstring_T_Path.c_str(), L"wb");
@@ -166,7 +170,7 @@ public:
 		// 코드 개선; 파일명 지정가능
 		// 임시 경로변수 생성
 		// 오버헤드를 극한으로 감소하기 위해, 환원방식이 아닌 스택 임시변수 선언 및 버리기로 함
-		wstring wstring_T_Path = wstring_BasicPath + wstring_BasicFileName;
+		wstring wstring_T_Path = wstring_M_BasicPath + wstring_M_BasicFileName;
 
 		// 파일 열기
 		_wfopen_s(&SDK_T_File, wstring_T_Path.c_str(), L"rb");
@@ -387,7 +391,7 @@ void FL_Save_ScratchImage(const wstring& _wstringName, const FL_DS_ResourceImage
 	}
 
 	// 향후, WIC말고 다른 포맷을 추가할 경우 이 부분 개선고려
-	wchar_t wchar_T_Extension[4] = {};
+	wchar_t wchar_T_Extension[16] = {};
 	_wsplitpath_s(wstring_T_Path.c_str(), nullptr, 0, nullptr, 0, nullptr, 0, wchar_T_Extension, 16);
 	wstring wstring_T_Extension = wchar_T_Extension;
 
