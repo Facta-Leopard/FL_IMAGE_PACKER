@@ -11,6 +11,23 @@
 
 ---
 
+## Additional Update(2025-04-27)
+
+- **Feature Enhancement**:
+  - Added functionality to **specify a default filename**`(CompressedImage.rsc)` when saving and loading resources.
+  - The **default filename is automatically used**, and you may modify it if necessary.
+
+- **Optimization**:
+  - To minimize memory access and path restoration overhead when handling default filenames, the following considerations were applied.
+
+### Overhead Comparison Table
+| Consideration | Description | Overhead in Previous Method | Overhead in Optimized Method |
+|:-------------|:------------|:----------------------------|:-----------------------------|
+| 1. Memory Access Cost | Accessing member variables via `this` pointer dereference | 3–5 cycles (pointer dereference) | 1–2 cycles (direct stack offset access) |
+| 2. Path Restoration Overhead | wstring copy for path backup and restore | 2 copies + 2 memory reallocations | No copy, 1 memory reallocation (during concatenation) |
+
+> **By applying stack-based caching**, **memory access cost and path restoration overhead have been drastically reduced** when dealing with default filenames.
+
 ## Urgent Update(2025-04-27)
 
 - **Bug Fix**:
@@ -78,6 +95,7 @@
 ## Future Improvements
 - Encryption/obfuscation of `.rsc` files.
 - Adding checksum validation.
+- Filename change during save/load will be supported in a future update.
 
 ---
 
@@ -88,6 +106,23 @@
 **라이센스:** Creative Commons Attribution 4.0 International (CC BY 4.0)
 
 ---
+
+## 추가 업데이트(2025-04-27)
+
+- **기능 확장**:
+  - 리소스를 **저장 및 로드**할 때 **기본 파일명**(`CompressedImage.rsc`)을 지정하여 사용할 수 있도록 기능을 추가했습니다.
+  - `기본 파일명을 자동으로 사용`하며, 필요 시 수정하시기 바랍니다.
+
+- **최적화**:
+  - 기본 파일명 사용 시, 메모리 접근 및 경로 복구 오버헤드를 줄이기 위해 다음 사항을 고려하여 최적화하였습니다.
+
+### 오버헤드 비교 표
+| 고려사항 | 설명 | 기존 방식 오버헤드 | 최적화 방식 오버헤드 |
+|:--------|:----|:----------------|:----------------|
+| 1. 메모리 접근 비용 | this 포인터 역참조 후 멤버 접근 | 3~5 cycles (포인터 역참조 발생) | 1~2 cycles (스택 오프셋 직접 접근) |
+| 2. 경로 복구 오버헤드 | 경로 저장 및 복구를 위한 wstring 복사 | 복사 2회 + 메모리 재할당 2회 | 복사 없음, 메모리 재할당 1회 (조합 시) |
+
+> **스택 캐싱 방식을 적용**함으로써, 기본 파일명 처리 시 **메모리 접근 비용과 경로 복구 비용을 모두 극한으로 감소**시켰습니다.
 
 ## 긴급 업데이트(2025-04-27)
 
@@ -170,5 +205,6 @@
 ## 업데이트 계획
 - .rsc 파일 크래킹 방지를 위한 암호화
 - 관리 로직 변경(싱글턴 등)
+- 저장 및 로드 시 파일명 변경 기능 추가
 
 ---
