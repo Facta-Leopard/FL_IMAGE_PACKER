@@ -72,6 +72,9 @@ public:
 		wcscat_s(wchar_T_Path_s, 255, L"\\Resource\\");
 		wstring_BasicPath = wchar_T_Path_s;
 
+		// 코드개선: 기본적으로 지정되는 파일명(확장자 포함)
+		wstring_BasicFileName = L"CompressedImage.rsc";
+
 		MF_Load_All();
 	}
 
@@ -94,16 +97,24 @@ public:
 	}
 
 protected:
-	map<wstring, FL_DS_ImageSet*>		STL_M_ImageSet;			// map<wstring, FL_DS_ImageSet*>; 데이터를 저장할 STL컨테이너
-	wstring							wstring_BasicPath;		// wstring; 기본적인 디렉토리 주소; 실행 디렉토리 + (\Resource) 디렉토리 주소 설정
+	map<wstring, FL_DS_ImageSet*>		STL_M_ImageSet;				// map<wstring, FL_DS_ImageSet*>; 데이터를 저장할 STL컨테이너
+	wstring							wstring_BasicPath;				// wstring; 기본적인 디렉토리 주소; 실행 디렉토리 + (\Resource) 디렉토리 주소 설정
+	wstring							wstring_BasicFileName;			// wstring; 기본적인 디렉토리 주소; 실행 디렉토리 + (\Resource) 디렉토리 주소 설정
 
 public:
 	void MF_Save_All()
 	{
 		// 향후, 난독화 및 분기 등으로, 메모리 덤프 등으로 리버스 엔지니어링하는 것을 막는 것도 고려해보자
-		
+
 		FILE* SDK_T_File = nullptr;
-		_wfopen_s(&SDK_T_File, wstring_BasicPath.c_str(), L"wb");
+
+		// 코드 개선; 파일명 지정가능
+		// 임시 경로변수 생성
+		// 오버헤드를 극한으로 감소하기 위해, 환원방식이 아닌 스택 임시변수 선언 및 버리기로 함
+		wstring wstring_T_Path = wstring_BasicPath + wstring_BasicFileName;
+
+		// 파일 열기
+		_wfopen_s(&SDK_T_File, wstring_T_Path.c_str(), L"wb");
 
 		// 향후, 조건문 부분을 _wfopen_s 반환값으로 하면 오버헤드가 더 적을 것 같긴한데, 10시간째 씨름중이라 나중에 다시 생각해보자
 		if (nullptr == SDK_T_File)
@@ -151,7 +162,14 @@ public:
 		// 향후, 난독화 및 분기 등으로, 메모리 덤프 등으로 리버스 엔지니어링하는 것을 막는 것도 고려해보자
 
 		FILE* SDK_T_File = nullptr;
-		_wfopen_s(&SDK_T_File, wstring_BasicPath.c_str(), L"rb");
+
+		// 코드 개선; 파일명 지정가능
+		// 임시 경로변수 생성
+		// 오버헤드를 극한으로 감소하기 위해, 환원방식이 아닌 스택 임시변수 선언 및 버리기로 함
+		wstring wstring_T_Path = wstring_BasicPath + wstring_BasicFileName;
+
+		// 파일 열기
+		_wfopen_s(&SDK_T_File, wstring_T_Path.c_str(), L"rb");
 
 		// 향후, 조건문 부분을 _wfopen_s 반환값으로 하면 오버헤드가 더 적을 것 같긴한데, 10시간째 씨름중이라 나중에 다시 생각해보자
 		if (nullptr == SDK_T_File)
@@ -199,6 +217,7 @@ public:
 			STL_M_ImageSet.insert({ T_Key, T_ImageSet });
 		}
 
+		// 파일 닫기
 		fclose(SDK_T_File);
 	}
 
