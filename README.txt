@@ -11,6 +11,11 @@
 
 ---
 
+## Micro Update(2025-04-29)
+
+- **Feature Enhancement**:
+  - Even if the image type(`FL_E_IMAGETYPE`) is set `incorrectly`, the correct type is now `automatically corrected based on the file extension`.
+
 ## Update(2025-04-28)
 
 - **Feature Addition**:
@@ -121,6 +126,10 @@
 **라이센스:** Creative Commons Attribution 4.0 International (CC BY 4.0)
 
 ---
+
+## 소규모 업데이트(2025-04-29)
+- **개선 사항**:
+  - 이미지 타입(FL_E_IMAGETYPE)이 잘못 입력된 경우에도, 파일 확장자를 기준으로 자동으로 올바른 타입으로 교정되도록 기능을 개선했습니다.
 
 ## 업데이트(2025-04-28)
 

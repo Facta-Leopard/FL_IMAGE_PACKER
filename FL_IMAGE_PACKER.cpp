@@ -421,16 +421,33 @@ void FL_Save_ScratchImage(const wstring& _wstringName, const FL_DS_ResourceImage
 	_wsplitpath_s(wstring_T_Path.c_str(), nullptr, 0, nullptr, 0, nullptr, 0, wchar_T_Extension, 16);
 	wstring wstring_T_Extension = wchar_T_Extension;
 
-	// 확장자에 따른 스크래칭 구분(WIC만 가능)
-	if ((wstring_T_Extension == L".png") || (wstring_T_Extension == L".PNG")
-		|| (wstring_T_Extension == L".jpg") || (wstring_T_Extension == L".JPG")
-		|| (wstring_T_Extension == L".jpeg") || (wstring_T_Extension == L".JPEG")
-		|| (wstring_T_Extension == L".bmp") || (wstring_T_Extension == L".BMP"))
+	// 확장자에 따라, 이미지 타입 부분을 잘못 입력했을 경우가 수정되도록 기능 개선
+	if ((wstring_T_Extension == L".png") || (wstring_T_Extension == L".PNG"))
 	{
-		if (FAILED(LoadFromWICFile(wstring_T_Path.c_str(), WIC_FLAGS_NONE, nullptr, T_ScratchImage)))
-		{
-			MessageBox(nullptr, L"LoadFromWICFile Failed", L"File Extension Is Not WIC", MB_OK | MB_ICONINFORMATION);
-		}
+		T_ImageSet.M_Desc.E_ImageType = _IMAGETYPE_PNG;
+	}
+	else if ((wstring_T_Extension == L".jpg") || (wstring_T_Extension == L".JPG"))
+	{
+		T_ImageSet.M_Desc.E_ImageType = _IMAGETYPE_JPG;
+	}
+	else if ((wstring_T_Extension == L".jpeg") || (wstring_T_Extension == L".JPEG"))
+	{
+		T_ImageSet.M_Desc.E_ImageType = _IMAGETYPE_JPEG;
+	}
+	else if ((wstring_T_Extension == L".bmp") || (wstring_T_Extension == L".BMP"))
+	{
+		T_ImageSet.M_Desc.E_ImageType = _IMAGETYPE_BMP;
+	}
+	else
+	{
+		MessageBox(nullptr, L"FileType Is Not WIC", L"FileType Is Not WIC", MB_OK | MB_ICONINFORMATION);
+		return;
+	}
+	// 확장자에 따른 스크래칭 구분(WIC만 가능)
+
+	if (FAILED(LoadFromWICFile(wstring_T_Path.c_str(), WIC_FLAGS_NONE, nullptr, T_ScratchImage)))
+	{
+		MessageBox(nullptr, L"LoadFromWICFile Failed", L"File Extension Is Not WIC", MB_OK | MB_ICONINFORMATION);
 	}
 
 	HRESULT T_Result = C_ImageManager.MF_Store_ScratchImage_To_CPUImage(T_ScratchImage, T_ImageSet);
