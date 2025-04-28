@@ -11,6 +11,11 @@
 
 ---
 
+## Update(2025-04-28)
+
+- **Feature Addition**:
+  - When the .rsc file is missing, a new file(`CompressedImage.rsc`) is automatically created and a message shows the file name and the default folder(`\\Resource\\`) path.
+
 ## Micro Update(2025-04-28)
 
 - **Feature Addition**:
@@ -116,6 +121,11 @@
 **라이센스:** Creative Commons Attribution 4.0 International (CC BY 4.0)
 
 ---
+
+## 업데이트(2025-04-28)
+
+- **기능 확장**:
+  - `.rsc` 파일이 없으면 자동으로 기본적으로 사용할 파일(`CompressedImage.rsc`)을 생성하고, 메시지로 기본 폴더(`\\Resource\\`)와 파일명을 표시하도록 하였습니다.
 
 ## 소규모 업데이트(2025-04-28)
 

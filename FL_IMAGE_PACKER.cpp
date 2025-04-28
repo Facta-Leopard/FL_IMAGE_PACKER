@@ -79,6 +79,22 @@ public:
 		// 코드개선: 기본적으로 지정되는 파일명(확장자 포함)
 		wstring_M_BasicFileName = L"CompressedImage.rsc";
 
+		// 파일이 없는 경우, CompressedImage.rsc 파일을 생성
+		FILE* SDK_T_File = nullptr;
+		wstring wstring_T_Path = wstring_M_BasicPath + wstring_M_BasicFileName;
+
+		_wfopen_s(&SDK_T_File, wstring_T_Path.c_str(), L"rb");
+
+		// 향후, 조건문 부분을 _wfopen_s 반환값으로 하면 오버헤드가 더 적을 것 같긴한데, 10시간째 씨름중이라 나중에 다시 생각해보자
+		if (nullptr == SDK_T_File)
+		{
+			_wfopen_s(&SDK_T_File, wstring_T_Path.c_str(), L"wb");
+			size_t T_Zero = 0;
+			fwrite(&T_Zero, sizeof(size_t), 1, SDK_T_File);
+			fclose(SDK_T_File);
+			MessageBoxW(nullptr, L"The .rsc File Does Not Exist", (L"A temporary file named `" + wstring_M_BasicFileName + L"` has been created at `" + wstring_M_BasicPath).c_str(), MB_OK);
+		}
+
 		MF_Load_All();
 	}
 
