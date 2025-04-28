@@ -252,9 +252,19 @@ public:
 		map<wstring, FL_DS_ImageSet*>::iterator T_Iterator = STL_M_ImageSet.find(_wstringName);
 		if (T_Iterator != STL_M_ImageSet.end())
 		{
-			delete T_Iterator->second;
+			// 이미 존재하면 메시지 박스 띄워서 사용자에게 확인
+			int T_MessageResult = MessageBoxW(
+				nullptr,
+				(_wstringName + L" Is Used").c_str(),
+				(L"Do You Want to OverWrite" + _wstringName + L"?").c_str(),
+				MB_YESNO | MB_ICONQUESTION
+			);
 
-			STL_M_ImageSet[_wstringName] = _ImageSet;
+			if (T_MessageResult == IDYES)
+			{
+				delete T_Iterator->second;
+				STL_M_ImageSet[_wstringName] = _ImageSet;
+			}
 		}
 		else
 		{

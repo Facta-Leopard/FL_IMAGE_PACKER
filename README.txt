@@ -13,6 +13,11 @@
 
 ## Micro Update(2025-04-28)
 
+- **Feature Addition**:
+  - Added a feature when using `MF_Attach_ImageSet()` asks the user if overwriting the image is already used.
+
+## Micro Update(2025-04-28)
+
 - **Feature Enhancement**:
   - Increased `extension buffer size to allow up to 15 characters`, `reducing buffer overrun risk`.
 
@@ -111,6 +116,11 @@
 **라이센스:** Creative Commons Attribution 4.0 International (CC BY 4.0)
 
 ---
+
+## 소규모 업데이트(2025-04-28)
+
+- **기능 확장**:
+  - 이미지 등록 함수(`MF_Attach_ImageSet()`)를 실행할 때, 이미 이미지가 존재하면 덮어쓰기 여부를 사용자에게 확인하는 기능을 추가했습니다.
 
 ## 소규모 업데이트(2025-04-28)
 
